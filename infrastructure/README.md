@@ -9,15 +9,12 @@ and one for application deployments.
 
 ### 1. Set Variables
 
-Replace the values below with your actual resource group, subscription, GitHub
-org/user, and repo name:
-
 ```powershell
 $RESOURCE_GROUP = "your-resource-group"
 $SUBSCRIPTION_ID = "your-subscription-id"
 $GH_ORG = "your-github-org-or-user"
 $GH_REPO = "your-github-repo-name"
-$ENVIRONMENT = "dev" # or your environment name
+$ENVIRONMENT = "demo" # or your environment name
 
 # Names for app registrations
 $INFRA_APP_NAME = "app-insights-demo-infra-gh"
