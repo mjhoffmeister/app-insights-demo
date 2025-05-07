@@ -1,0 +1,64 @@
+name: Deploy Infrastructure
+
+on:
+  push:
+    branches:
+      - main # Or your default branch
+    paths:
+      - 'infrastructure/**'
+      - '**.tf'
+      - '**.tfvars'
+  workflow_dispatch:
+
+permissions:
+  id-token: write # Required for Workload Identity Federation
+  contents: read  # Required to checkout the code
+
+jobs:
+  deploy-infrastructure:
+    runs-on: ubuntu-latest
+    environment: dev # Assuming a 'dev' environment in GitHub, create if it doesn't exist
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: 'Az CLI login'
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.AZURE_INFRA_CLIENT_ID }} # Service Principal for Infrastructure
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.11.0" # Specify your desired Terraform version
+
+      - name: Terraform Init
+        id: init
+        run: terraform init
+        working-directory: ./infrastructure
+
+      - name: Select or Create Terraform Workspace
+        run: terraform workspace select app_insights_demo || terraform workspace new app_insights_demo
+        working-directory: ./infrastructure
+
+      - name: Terraform Validate
+        id: validate
+        run: terraform validate -no-color
+        working-directory: ./infrastructure
+
+      - name: Terraform Plan
+        id: plan
+        run: terraform plan -no-color -var-file=demo.tfvars -out=tfplan
+        working-directory: ./infrastructure
+        continue-on-error: true
+
+      - name: Terraform Plan Status
+        if: steps.plan.outcome == 'failure'
+        run: exit 1
+
+      - name: Terraform Apply
+        id: apply
+        run: terraform apply -auto-approve -no-color tfplan
+        working-directory: ./infrastructure

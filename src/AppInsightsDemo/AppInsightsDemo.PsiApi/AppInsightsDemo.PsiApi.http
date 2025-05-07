@@ -1,0 +1,6 @@
+@AppInsightsDemo.PsiApi_HostAddress = http://localhost:5031
+
+GET {{AppInsightsDemo.PsiApi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

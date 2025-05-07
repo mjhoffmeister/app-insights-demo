@@ -1,0 +1,79 @@
+name: Build and Deploy APIs
+
+on:
+  push:
+    branches:
+      - main # Or your default branch
+    paths:
+      - 'src/**'
+      - '**/AppInsightsDemo.*Api.csproj' # Trigger on project file changes
+  workflow_dispatch:
+
+permissions:
+  id-token: write # Required for Workload Identity Federation
+  contents: read  # Required to checkout the code
+
+env:
+  DOTNET_VERSION: '9.0.x' # Specify your .NET version
+  OMEGA_API_PROJECT_PATH: src/AppInsightsDemo/AppInsightsDemo.OmegaApi/AppInsightsDemo.OmegaApi.csproj
+  PSI_API_PROJECT_PATH: src/AppInsightsDemo/AppInsightsDemo.PsiApi/AppInsightsDemo.PsiApi.csproj
+  # AZURE_APP_SERVICE_NAME_OMEGA: # Will be set by infra output or you can set it here if known
+  # AZURE_APP_SERVICE_NAME_PSI: 
+  # AZURE_RESOURCE_GROUP: # Will be set by infra output or you can set it here if known
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    environment: dev # Assuming a 'dev' environment in GitHub
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: 'Az CLI login'
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.AZURE_APPS_CLIENT_ID }} # Service Principal for Applications
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      # Add steps to get App Service names and Resource Group from Terraform output if not hardcoded
+      # Example: 
+      - name: Get Infra Outputs
+        id: infra_outputs
+        run: |
+          terraform -chdir=./infrastructure init -backend=false
+          terraform -chdir=./infrastructure workspace select app_insights_demo || terraform -chdir=./infrastructure workspace new app_insights_demo
+          echo "AZURE_APP_SERVICE_NAME_OMEGA=$(terraform -chdir=./infrastructure output -raw app_service_omega_name)" >> $GITHUB_ENV
+          echo "AZURE_APP_SERVICE_NAME_PSI=$(terraform -chdir=./infrastructure output -raw app_service_psi_name)" >> $GITHUB_ENV
+          echo "AZURE_RESOURCE_GROUP=$(terraform -chdir=./infrastructure output -raw resource_group_name)" >> $GITHUB_ENV
+
+      - name: Build and Publish OmegaApi
+        run: |
+          dotnet restore ${{ env.OMEGA_API_PROJECT_PATH }}
+          dotnet build ${{ env.OMEGA_API_PROJECT_PATH }} --configuration Release --no-restore
+          dotnet publish ${{ env.OMEGA_API_PROJECT_PATH }} --configuration Release --no-build --output ./publish-omega
+
+      - name: Deploy OmegaApi to Azure App Service
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: ${{ env.AZURE_APP_SERVICE_NAME_OMEGA }}
+          package: ./publish-omega
+          resource-group-name: ${{ env.AZURE_RESOURCE_GROUP }}
+
+      - name: Build and Publish PsiApi
+        run: |
+          dotnet restore ${{ env.PSI_API_PROJECT_PATH }}
+          dotnet build ${{ env.PSI_API_PROJECT_PATH }} --configuration Release --no-restore
+          dotnet publish ${{ env.PSI_API_PROJECT_PATH }} --configuration Release --no-build --output ./publish-psi
+
+      - name: Deploy PsiApi to Azure App Service
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: ${{ env.AZURE_APP_SERVICE_NAME_PSI }}
+          package: ./publish-psi
+          resource-group-name: ${{ env.AZURE_RESOURCE_GROUP }}

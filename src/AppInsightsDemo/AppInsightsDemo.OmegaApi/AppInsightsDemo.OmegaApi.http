@@ -1,0 +1,6 @@
+@AppInsightsDemo.OmegaApi_HostAddress = http://localhost:5196
+
+GET {{AppInsightsDemo.OmegaApi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
