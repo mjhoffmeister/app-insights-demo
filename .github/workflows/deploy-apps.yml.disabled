@@ -17,14 +17,11 @@ env:
   DOTNET_VERSION: '9.0.x' # Specify your .NET version
   OMEGA_API_PROJECT_PATH: src/AppInsightsDemo/AppInsightsDemo.OmegaApi/AppInsightsDemo.OmegaApi.csproj
   PSI_API_PROJECT_PATH: src/AppInsightsDemo/AppInsightsDemo.PsiApi/AppInsightsDemo.PsiApi.csproj
-  # AZURE_APP_SERVICE_NAME_OMEGA: # Will be set by infra output or you can set it here if known
-  # AZURE_APP_SERVICE_NAME_PSI: 
-  # AZURE_RESOURCE_GROUP: # Will be set by infra output or you can set it here if known
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
-    environment: dev # Assuming a 'dev' environment in GitHub
+    environment: demo
     steps:
       - name: Checkout code
         uses: actions/checkout@v4

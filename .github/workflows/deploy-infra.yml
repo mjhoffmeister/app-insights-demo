@@ -17,7 +17,7 @@ permissions:
 jobs:
   deploy-infrastructure:
     runs-on: ubuntu-latest
-    environment: dev # Assuming a 'dev' environment in GitHub, create if it doesn't exist
+    environment: demo
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -32,7 +32,7 @@ jobs:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
         with:
-          terraform_version: "1.11.0" # Specify your desired Terraform version
+          terraform_version: "1.1.0" # Specify your desired Terraform version
 
       - name: Terraform Init
         id: init

@@ -15,7 +15,7 @@ terraform {
     use_azuread_auth     = true
   }
 
-  required_version = ">= 1.11.0"
+  required_version = ">= 1.1.0"
 }
 
 provider "azurerm" {
@@ -42,7 +42,7 @@ resource "azurerm_resource_group" "this" {
   location = var.location
 }
 
-# Log analytics worskpace
+# Log analytics workspace
 module "law" {
   source  = "Azure/avm-res-operationalinsights-workspace/azurerm"
   version = "0.4.2"
@@ -91,7 +91,7 @@ module "asp" {
 
 # App Service for the Psi API
 module "app_psi" {
-    source  = "Azure/avm-res-web-app/azurerm"
+    source  = "Azure/avm-res-web-site/azurerm"
     version = "0.16.0"
 
     name                = join("-", ["app", "appidemo", "psi", var.location])
@@ -99,8 +99,8 @@ module "app_psi" {
     resource_group_name = azurerm_resource_group.this.name
     kind = "webapp"
 
-    os_type                  = module.asp.os_type
-    service_plan_resource_id = module.asp.id
+    os_type                  = module.asp.resource.os_type
+    service_plan_resource_id = module.asp.resource_id
 
     application_insights = {
         name = join("-", ["appi", "appidemo", "psi", var.location])
@@ -110,7 +110,7 @@ module "app_psi" {
 
 # App Service for the Omega API
 module "app_omega" {
-    source  = "Azure/avm-res-web-app/azurerm"
+    source  = "Azure/avm-res-web-site/azurerm"
     version = "0.16.0"
 
     name                = join("-", ["app", "appidemo", "omega", var.location])
@@ -118,8 +118,8 @@ module "app_omega" {
     resource_group_name = azurerm_resource_group.this.name
     kind = "webapp"
 
-    os_type                  = module.asp.os_type
-    service_plan_resource_id = module.asp.id
+    os_type                  = module.asp.resource.os_type
+    service_plan_resource_id = module.asp.resource_id
 
     application_insights = {
         name = join("-", ["appi", "appidemo", "omega", var.location])
