@@ -63,7 +63,7 @@ jobs:
         id: tf-plan
         run: |
           export exitcode=0
-          terraform plan -detailed-exitcode -no-color -out tfplan || export exitcode=$?
+          terraform plan -detailed-exitcode -no-color -out tfplan -var-file=demo.tfvars || export exitcode=$?
 
           echo "exitcode=$exitcode" >> $GITHUB_OUTPUT
           
@@ -109,5 +109,5 @@ jobs:
 
       - name: Terraform Apply
         id: apply
-        run: terraform apply -auto-approve -no-color tfplan
+        run: terraform apply -auto-approve -no-color tfplan -var-file=demo.tfvars
         working-directory: ./infrastructure
