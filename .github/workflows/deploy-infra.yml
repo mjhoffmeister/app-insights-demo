@@ -34,6 +34,17 @@ jobs:
         with:
           terraform_version: "1.11.4"
 
+      # Print OIDC token claims for debugging
+      - name: Print OIDC Token Claims
+        id: print-oidc
+        run: |
+          echo "Requesting OIDC token..."
+          TOKEN=$(curl -sLS -X GET "$ACTIONS_ID_TOKEN_REQUEST_URL&audience=api://AzureADTokenExchange" -H "Authorization: Bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN")
+          echo "$TOKEN" | jq .
+        env:
+          ACTIONS_ID_TOKEN_REQUEST_TOKEN: ${{ steps.generate_oidc_token.outputs.id_token }}
+          ACTIONS_ID_TOKEN_REQUEST_URL: ${{ steps.generate_oidc_token.outputs.id_token_url }}
+
       - name: Terraform Init
         id: init
         run: terraform init
