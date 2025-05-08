@@ -73,6 +73,7 @@ jobs:
           else 
             exit 0
           fi
+        working-directory: ./infrastructure
 
       # Save plan to artifacts  
       - name: Publish Terraform Plan
