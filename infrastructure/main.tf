@@ -12,10 +12,10 @@ terraform {
     storage_account_name = "sttfstateschemata"
     container_name       = "tfstate"
     key                  = "terraform.tfstate"
-    use_azuread_auth     = true
+    use_oidc             = true
   }
 
-  required_version = ">= 1.1.0"
+  required_version = "1.11.4"
 }
 
 provider "azurerm" {
@@ -25,6 +25,7 @@ provider "azurerm" {
     }
   }
 
+  use_oidc = true
   subscription_id = var.subscription_id
 }
 
