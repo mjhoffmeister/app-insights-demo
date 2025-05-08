@@ -106,5 +106,5 @@ jobs:
 
       - name: Terraform Apply
         id: apply
-        run: terraform apply -auto-approve -no-color tfplan -var-file=demo.tfvars
+        run: terraform apply -auto-approve -no-color -var-file=demo.tfvars tfplan
         working-directory: ./infrastructure
