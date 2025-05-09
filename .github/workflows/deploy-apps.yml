@@ -43,7 +43,7 @@ jobs:
       - name: Get Infra Outputs
         id: infra_outputs
         run: |
-          terraform -chdir=./infrastructure init -backend=false
+          terraform -chdir=./infrastructure init
           terraform -chdir=./infrastructure workspace select app_insights_demo || terraform -chdir=./infrastructure workspace new app_insights_demo
           echo "AZURE_APP_SERVICE_NAME_OMEGA=$(terraform -chdir=./infrastructure output -raw app_service_omega_name)" >> $GITHUB_ENV
           echo "AZURE_APP_SERVICE_NAME_PSI=$(terraform -chdir=./infrastructure output -raw app_service_psi_name)" >> $GITHUB_ENV
