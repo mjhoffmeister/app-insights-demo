@@ -31,14 +31,6 @@ jobs:
         with:
           dotnet-version: ${{ env.DOTNET_VERSION }}
 
-      - name: 'Az CLI login'
-        uses: azure/login@v1
-        with:
-          client-id: ${{ secrets.AZURE_APPS_CLIENT_ID }} # Service Principal for Applications
-          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-
-      # Add steps to get App Service names and Resource Group from Terraform output if not hardcoded
       # Example: 
       - name: Get Infra Outputs
         id: infra_outputs
