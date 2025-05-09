@@ -14,7 +14,7 @@ permissions:
   contents: read  # Required to checkout the code
 
 env:
-  DOTNET_VERSION: '9.0.x' # Specify your .NET version
+  DOTNET_VERSION: '8.0.x' # Specify your .NET version
   OMEGA_API_PROJECT_PATH: src/AppInsightsDemo/AppInsightsDemo.OmegaApi/AppInsightsDemo.OmegaApi.csproj
   PSI_API_PROJECT_PATH: src/AppInsightsDemo/AppInsightsDemo.PsiApi/AppInsightsDemo.PsiApi.csproj
 
