@@ -147,7 +147,7 @@ module "app_omega" {
   site_config = {
     application_stack = {
       current_stack = "dotnet"
-      dotnet_version = "9.0"
+      dotnet_version = "8.0"
     }
   }
 }
