@@ -39,15 +39,6 @@ jobs:
         with:
           terraform_version: "1.11.4" # Specify the required Terraform version
 
-      - name: Terraform Init
-        id: init
-        run: terraform init
-        working-directory: ./infrastructure
-
-      - name: Select or Create Terraform Workspace
-        run: terraform workspace select app_insights_demo || terraform workspace new app_insights_demo
-        working-directory: ./infrastructure
-
       # Example: 
       - name: Get Infra Outputs
         id: infra_outputs
