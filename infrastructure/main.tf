@@ -83,12 +83,13 @@ module "asp" {
   source  = "Azure/avm-res-web-serverfarm/azurerm"
   version = "0.5.0"
 
-  name                = module.naming.app_service_plan.name
-  location            = var.location
-  resource_group_name = azurerm_resource_group.this.name
-  os_type             = "Linux"
-  sku_name            = "S1"
-  worker_count        = 1
+  name                   = module.naming.app_service_plan.name
+  location               = var.location
+  resource_group_name    = azurerm_resource_group.this.name
+  os_type                = "Linux"
+  sku_name               = "S1"
+  worker_count           = 1
+  zone_balancing_enabled = false
 }
 
 # App Service for the Psi API
@@ -103,7 +104,6 @@ module "app_psi" {
 
   os_type                  = module.asp.resource.os_type
   service_plan_resource_id = module.asp.resource_id
-  zone_balancing_enabled   = false
 
   application_insights = {
     name                  = join("-", ["appi", "appidemo", "psi", var.location])
