@@ -103,6 +103,7 @@ module "app_psi" {
 
   os_type                  = module.asp.resource.os_type
   service_plan_resource_id = module.asp.resource_id
+  zone_balancing_enabled   = false
 
   application_insights = {
     name                  = join("-", ["appi", "appidemo", "psi", var.location])
