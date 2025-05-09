@@ -53,7 +53,7 @@ jobs:
           echo "AZURE_APP_SERVICE_NAME_PSI=$(terraform -chdir=./infrastructure output -raw app_service_psi_name)" >> $GITHUB_ENV
           echo "AZURE_RESOURCE_GROUP=$(terraform -chdir=./infrastructure output -raw resource_group_name)" >> $GITHUB_ENV
 
-      - name: Clean and Publish OmegaApi
+      - name: Build and Publish OmegaApi
         run: |
           dotnet restore ${{ env.OMEGA_API_PROJECT_PATH }}
           dotnet build ${{ env.OMEGA_API_PROJECT_PATH }} --configuration Release --no-restore
@@ -63,7 +63,7 @@ jobs:
         uses: azure/webapps-deploy@v3
         with:
           app-name: ${{ env.AZURE_APP_SERVICE_NAME_OMEGA }}
-          package: ./publish-omega.zip
+          package: ${{ env.OMEGA_API_PROJECT_PATH }}/omega-api
           resource-group-name: ${{ env.AZURE_RESOURCE_GROUP }}
 
       - name: Clean and Publish PsiApi
@@ -76,5 +76,5 @@ jobs:
         uses: azure/webapps-deploy@v3
         with:
           app-name: ${{ env.AZURE_APP_SERVICE_NAME_PSI }}
-          package: ./publish-psi.zip
+          package: ${{ env.PSI_API_PROJECT_PATH }}/psi-api
           resource-group-name: ${{ env.AZURE_RESOURCE_GROUP }}
