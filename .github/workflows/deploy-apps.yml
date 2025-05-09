@@ -15,8 +15,8 @@ permissions:
 
 env:
   DOTNET_VERSION: '9.0.x' # Specify your .NET version
-  OMEGA_API_PROJECT_PATH: src/AppInsightsDemo/AppInsightsDemo.OmegaApi/AppInsightsDemo.OmegaApi.csproj
-  PSI_API_PROJECT_PATH: src/AppInsightsDemo/AppInsightsDemo.PsiApi/AppInsightsDemo.PsiApi.csproj
+  OMEGA_API_PROJECT_PATH: src/AppInsightsDemo/AppInsightsDemo.OmegaApi
+  PSI_API_PROJECT_PATH: src/AppInsightsDemo/AppInsightsDemo.PsiApi
 
 jobs:
   build-and-deploy:
@@ -53,7 +53,7 @@ jobs:
           echo "AZURE_APP_SERVICE_NAME_PSI=$(terraform -chdir=./infrastructure output -raw app_service_psi_name)" >> $GITHUB_ENV
           echo "AZURE_RESOURCE_GROUP=$(terraform -chdir=./infrastructure output -raw resource_group_name)" >> $GITHUB_ENV
 
-      - name: Build and Publish OmegaApi
+      - name: Clean and Publish OmegaApi
         run: |
           dotnet restore ${{ env.OMEGA_API_PROJECT_PATH }}
           dotnet build ${{ env.OMEGA_API_PROJECT_PATH }} --configuration Release --no-restore
@@ -63,10 +63,10 @@ jobs:
         uses: azure/webapps-deploy@v3
         with:
           app-name: ${{ env.AZURE_APP_SERVICE_NAME_OMEGA }}
-          package: ./publish-omega
+          package: ./publish-omega.zip
           resource-group-name: ${{ env.AZURE_RESOURCE_GROUP }}
 
-      - name: Build and Publish PsiApi
+      - name: Clean and Publish PsiApi
         run: |
           dotnet restore ${{ env.PSI_API_PROJECT_PATH }}
           dotnet build ${{ env.PSI_API_PROJECT_PATH }} --configuration Release --no-restore
@@ -76,5 +76,5 @@ jobs:
         uses: azure/webapps-deploy@v3
         with:
           app-name: ${{ env.AZURE_APP_SERVICE_NAME_PSI }}
-          package: ./publish-psi
+          package: ./publish-psi.zip
           resource-group-name: ${{ env.AZURE_RESOURCE_GROUP }}

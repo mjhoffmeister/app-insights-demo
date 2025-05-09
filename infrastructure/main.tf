@@ -105,6 +105,10 @@ module "app_psi" {
   os_type                  = module.asp.resource.os_type
   service_plan_resource_id = module.asp.resource_id
 
+  app_settings = {
+    WEBSITE_RUN_FROM_PACKAGE = "1"
+  }
+
   application_insights = {
     name                  = join("-", ["appi", "appidemo", "psi", var.location])
     workspace_resource_id = module.law.resource_id
@@ -123,6 +127,10 @@ module "app_omega" {
 
   os_type                  = module.asp.resource.os_type
   service_plan_resource_id = module.asp.resource_id
+
+  app_settings = {
+    WEBSITE_RUN_FROM_PACKAGE = "1"
+  }
 
   application_insights = {
     name                  = join("-", ["appi", "appidemo", "omega", var.location])
