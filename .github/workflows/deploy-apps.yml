@@ -15,8 +15,8 @@ permissions:
 
 env:
   DOTNET_VERSION: '9.0.x' # Specify your .NET version
-  OMEGA_API_PROJECT_PATH: src/AppInsightsDemo/AppInsightsDemo.OmegaApi
-  PSI_API_PROJECT_PATH: src/AppInsightsDemo/AppInsightsDemo.PsiApi
+  OMEGA_API_PROJECT_PATH: src/AppInsightsDemo/AppInsightsDemo.OmegaApi/AppInsightsDemo.OmegaApi.csproj
+  PSI_API_PROJECT_PATH: src/AppInsightsDemo/AppInsightsDemo.PsiApi/AppInsightsDemo.PsiApi.csproj
 
 jobs:
   build-and-deploy:
@@ -53,28 +53,36 @@ jobs:
           echo "AZURE_APP_SERVICE_NAME_PSI=$(terraform -chdir=./infrastructure output -raw app_service_psi_name)" >> $GITHUB_ENV
           echo "AZURE_RESOURCE_GROUP=$(terraform -chdir=./infrastructure output -raw resource_group_name)" >> $GITHUB_ENV
 
-      - name: Build and Publish OmegaApi
+      - name: Clean and Publish OmegaApi
         run: |
+          rm -rf ./publish-omega ./publish-omega.zip
           dotnet restore ${{ env.OMEGA_API_PROJECT_PATH }}
           dotnet build ${{ env.OMEGA_API_PROJECT_PATH }} --configuration Release --no-restore
           dotnet publish ${{ env.OMEGA_API_PROJECT_PATH }} --configuration Release --no-build --output ./publish-omega
+          cd ./publish-omega
+          zip -r ../publish-omega.zip .
+          cd ..
 
       - name: Deploy OmegaApi to Azure App Service
         uses: azure/webapps-deploy@v3
         with:
           app-name: ${{ env.AZURE_APP_SERVICE_NAME_OMEGA }}
-          package: ./publish-omega
+          package: ./publish-omega.zip
           resource-group-name: ${{ env.AZURE_RESOURCE_GROUP }}
 
       - name: Clean and Publish PsiApi
         run: |
+          rm -rf ./publish-psi ./publish-psi.zip
           dotnet restore ${{ env.PSI_API_PROJECT_PATH }}
           dotnet build ${{ env.PSI_API_PROJECT_PATH }} --configuration Release --no-restore
           dotnet publish ${{ env.PSI_API_PROJECT_PATH }} --configuration Release --no-build --output ./publish-psi
+          cd ./publish-psi
+          zip -r ../publish-psi.zip .
+          cd ..
 
       - name: Deploy PsiApi to Azure App Service
         uses: azure/webapps-deploy@v3
         with:
           app-name: ${{ env.AZURE_APP_SERVICE_NAME_PSI }}
-          package: ./publish-psi
+          package: ./publish-psi.zip
           resource-group-name: ${{ env.AZURE_RESOURCE_GROUP }}
