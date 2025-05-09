@@ -14,9 +14,6 @@ permissions:
   contents: read  # Required to checkout the code
 
 env:
-  ARM_CLIENT_ID: ${{ secrets.AZURE_INFRA_CLIENT_ID }}
-  ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-  ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
   DOTNET_VERSION: '9.0.x' # Specify your .NET version
   OMEGA_API_PROJECT_PATH: src/AppInsightsDemo/AppInsightsDemo.OmegaApi/AppInsightsDemo.OmegaApi.csproj
   PSI_API_PROJECT_PATH: src/AppInsightsDemo/AppInsightsDemo.PsiApi/AppInsightsDemo.PsiApi.csproj
@@ -33,6 +30,13 @@ jobs:
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: 'Az CLI login'
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.AZURE_APPS_CLIENT_ID }} # Service Principal for Applications
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
