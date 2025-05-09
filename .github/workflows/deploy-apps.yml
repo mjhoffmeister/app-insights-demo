@@ -63,7 +63,7 @@ jobs:
         uses: azure/webapps-deploy@v3
         with:
           app-name: ${{ env.AZURE_APP_SERVICE_NAME_OMEGA }}
-          package: ${{ env.OMEGA_API_PROJECT_PATH }}/omega-api
+          package: ./publish-omega
           resource-group-name: ${{ env.AZURE_RESOURCE_GROUP }}
 
       - name: Clean and Publish PsiApi
@@ -76,5 +76,5 @@ jobs:
         uses: azure/webapps-deploy@v3
         with:
           app-name: ${{ env.AZURE_APP_SERVICE_NAME_PSI }}
-          package: ${{ env.PSI_API_PROJECT_PATH }}/psi-api
+          package: ./publish-psi
           resource-group-name: ${{ env.AZURE_RESOURCE_GROUP }}
