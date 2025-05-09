@@ -113,6 +113,12 @@ module "app_psi" {
     name                  = join("-", ["appi", "appidemo", "psi", var.location])
     workspace_resource_id = module.law.resource_id
   }
+
+  site_config = {
+    application_stack = {
+      dotnet_version = "9.0"
+    }
+  }
 }
 
 # App Service for the Omega API
@@ -135,5 +141,11 @@ module "app_omega" {
   application_insights = {
     name                  = join("-", ["appi", "appidemo", "omega", var.location])
     workspace_resource_id = module.law.resource_id
+  }
+
+  site_config = {
+    application_stack = {
+      dotnet_version = "9.0"
+    }
   }
 }
