@@ -1,9 +1,9 @@
 output "app_service_omega_name" {
-  value = module.app_psi.name
+  value = module.app_omega.name
 }
 
 output "app_service_psi_name" {
-  value = module.app_omega.name
+  value = module.app_psi.name
 }
 
 output "resource_group_name" {
