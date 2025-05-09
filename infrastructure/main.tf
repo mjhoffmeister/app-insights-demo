@@ -143,11 +143,4 @@ module "app_omega" {
     name                  = join("-", ["appi", "appidemo", "omega", var.location])
     workspace_resource_id = module.law.resource_id
   }
-
-  site_config = {
-    application_stack = {
-      current_stack = "dotnet"
-      dotnet_version = "8.0"
-    }
-  }
 }
