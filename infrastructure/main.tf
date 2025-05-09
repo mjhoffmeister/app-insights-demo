@@ -116,6 +116,7 @@ module "app_psi" {
 
   site_config = {
     application_stack = {
+      current_stack = "dotnet"
       dotnet_version = "9.0"
     }
   }
@@ -145,6 +146,7 @@ module "app_omega" {
 
   site_config = {
     application_stack = {
+      current_stack = "dotnet"
       dotnet_version = "9.0"
     }
   }
