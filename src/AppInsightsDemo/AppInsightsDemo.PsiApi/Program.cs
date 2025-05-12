@@ -1,15 +1,9 @@
+using Azure.Monitor.OpenTelemetry.AspNetCore;
 using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Explicitly add Application Insights logger provider
-builder.Logging.AddApplicationInsights(
-    configureTelemetryConfiguration: (config) => { },
-    configureApplicationInsightsLoggerOptions: (options) => { }
-);
-
-// Add Application Insights telemetry
-builder.Services.AddApplicationInsightsTelemetry();
+builder.Services.AddOpenTelemetry().UseAzureMonitor();
 
 // Add HttpClient factory for making HTTP calls
 builder.Services.AddHttpClient();
