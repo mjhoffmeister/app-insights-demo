@@ -18,6 +18,13 @@ app.MapGet("/fibonacci/{n:int}", (int n, ILoggerFactory loggerFactory) =>
         return Results.BadRequest(new { error = "n must be a non-negative integer." });
     }
 
+    // Throw an exception the answer to the life, universe, and everything
+    if (n == 42)
+    {
+        throw new Exception(
+            "The answer to the life, universe, and everything is 42.");
+    }
+
     // Calculate nth Fibonacci number iteratively
     ulong Fib(int num)
     {
