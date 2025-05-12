@@ -1,6 +1,15 @@
 using Azure.Monitor.OpenTelemetry.AspNetCore;
+using OpenTelemetry.Logs;
+using OpenTelemetry.Metrics;
+using System.Diagnostics.Metrics;
 
 var builder = WebApplication.CreateBuilder(args);
+
+string lifeUniverseEverythingMeterName = "fib.life_universe_everything";
+
+// Configure the OpenTelemetry meter provider to add a meter named "OTel.AzureMonitor.Demo".
+builder.Services.ConfigureOpenTelemetryMeterProvider((_, builder) =>
+    builder.AddMeter(lifeUniverseEverythingMeterName));
 
 builder.Services.AddOpenTelemetry().UseAzureMonitor();
 
@@ -8,6 +17,13 @@ var app = builder.Build();
 
 app.UseHttpsRedirection();
 
+// Create a meter and counter for "life_universe_everything"
+Meter lifeUniverseEverythingMeter = new(lifeUniverseEverythingMeterName);
+Counter<long> lifeUniverseEverythingCounter = lifeUniverseEverythingMeter.CreateCounter<long>(
+    "fib.life_universe_everything.counter",
+    "count",
+    "Counts the number of times the answer to the life, universe, and everything is attempted to " +
+    "be used as a Fibonacci sequence number.");
 
 // GET /fibonacci/{n} - Returns the nth Fibonacci number (n > 0)
 app.MapGet("/fibonacci/{n:int}", (int n, ILoggerFactory loggerFactory) =>
@@ -22,6 +38,8 @@ app.MapGet("/fibonacci/{n:int}", (int n, ILoggerFactory loggerFactory) =>
     // Throw an exception the answer to the life, universe, and everything
     if (n == 42)
     {
+        lifeUniverseEverythingCounter.Add(1);
+
         throw new Exception(
             "The answer to the life, universe, and everything is 42.");
     }
