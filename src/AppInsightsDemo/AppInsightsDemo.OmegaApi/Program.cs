@@ -32,16 +32,16 @@ app.MapGet("/fibonacci/{n:int}", (int n, ILoggerFactory loggerFactory) =>
     if (n < 0)
     {
         logger.LogWarning("Invalid Fibonacci request: n={n}", n);
-        return Results.BadRequest(new { error = "n must be a non-negative integer." });
+        
+        // Throw an exception if n is negative
+        throw new ArgumentOutOfRangeException(
+            nameof(n), "Fibonacci number must be non-negative.");
     }
 
-    // Throw an exception the answer to the life, universe, and everything
+    // Count the attempt to use the answer to the life, universe, and everything
     if (n == 42)
     {
         lifeUniverseEverythingCounter.Add(1);
-
-        throw new Exception(
-            "The answer to the life, universe, and everything is 42.");
     }
 
     // Calculate nth Fibonacci number iteratively

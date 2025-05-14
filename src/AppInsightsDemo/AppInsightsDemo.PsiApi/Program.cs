@@ -12,9 +12,12 @@ var app = builder.Build();
 
 app.UseHttpsRedirection();
 
-
 // GET /fibonacci/{n} - Calls Omega API to get the nth Fibonacci number
-app.MapGet("/fibonacci/{n:int}", async ([FromRoute] int n, [FromServices] IHttpClientFactory httpClientFactory, [FromServices] IConfiguration config, [FromServices] ILoggerFactory loggerFactory) =>
+app.MapGet("/fibonacci/{n:int}", async ([
+    FromRoute] int n,
+    [FromServices] IHttpClientFactory httpClientFactory,
+    [FromServices] IConfiguration config,
+    [FromServices] ILoggerFactory loggerFactory) =>
 {
     var logger = loggerFactory.CreateLogger("PsiApi");
     var http = httpClientFactory.CreateClient();
