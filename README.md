@@ -58,7 +58,7 @@ The goal of this project is to provide a reference implementation for:
 ### Sample KQL queries
 
 **Custom metrics**
-```
+```k
 customMetrics
 | where name == 'fib.life_universe_everything.counter'
 ```
