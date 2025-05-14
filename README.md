@@ -55,6 +55,44 @@ The goal of this project is to provide a reference implementation for:
 - Automatic and custom logs, exceptions, and metrics in Application Insights.
 - Secure, automated deployments with no secrets in your pipeline.
 
+### Sample KQL queries
+
+**Custom metrics**
+```
+customMetrics
+| where name == 'fib.life_universe_everything.counter'
+```
+
+**Dependency tracking**
+```k
+// Single request
+(requests | union dependencies)
+| where operation_Id == "{operation_id}"
+```
+
+```k
+// All requests
+(requests | union dependencies)
+| where success == false
+  and url !contains "robot"
+| project timestamp, operation_Id, url, resultCode, target
+| order by operation_Id
+```
+
+**Visualization**
+```k
+traces
+| where message contains "Omega API call succeeded"
+  and message !contains "n=1"
+| extend fibSeqNum = split(message, "n=")[1]
+| summarize requestCount = count() by toint(fibSeqNum)
+| order by fibSeqNum asc
+| render barchart
+    with(
+        title = "Requests by Fibonnaci sequence number",
+        xtitle = "Fibonacci sequence number",
+        ytitle = "Request count")
+```
 ---
 
 **This repo is intended as a learning and reference resource for teams adopting Application Insights and secure Azure DevOps
