@@ -58,19 +58,19 @@ The goal of this project is to provide a reference implementation for:
 ### Sample KQL queries
 
 **Custom metrics**
-```k
+```kql
 customMetrics
 | where name == "fib.life_universe_everything.counter"
 ```
 
 **Dependency tracking**
-```k
+```kql
 // Single request
 (requests | union dependencies)
 | where operation_Id == "{operation_id}"
 ```
 
-```k
+```kql
 // All requests
 (requests | union dependencies)
 | where success == false
@@ -80,7 +80,7 @@ customMetrics
 ```
 
 **Visualization**
-```k
+```kql
 traces
 | where message contains "Omega API call succeeded"
   and message !contains "n=1"
