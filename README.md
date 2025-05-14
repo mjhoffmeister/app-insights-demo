@@ -60,7 +60,7 @@ The goal of this project is to provide a reference implementation for:
 **Custom metrics**
 ```k
 customMetrics
-| where name == 'fib.life_universe_everything.counter'
+| where name == "fib.life_universe_everything.counter"
 ```
 
 **Dependency tracking**
